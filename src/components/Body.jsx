@@ -6,13 +6,12 @@ export default function Body({children})
                 <div className="
                         w-screen
                         h-screen
-                        flex
-                        justify-center
-                        items-center
+                        pt-6
                 ">
                         <div className="
                                 w-[90%]
                                 h-fit
+                                mx-auto
                                 text-neutral-900
                                 px-4
                                 py-6

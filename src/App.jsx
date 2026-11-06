@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 
 import Body from './components/Body'
 import File from './components/File';
+import { convertToPNG } from './conversion/image';
 
 function App() {
 
@@ -9,6 +10,7 @@ function App() {
         const [isDragging, setIsDragging] = useState(false);
         const [error, setError] = useState(null);
         const [qualityValue, setQualityValue] = useState(0.9);
+        const [convertedImage, setConvertedImage] = useState(null);
         const fileInput = useRef(null);
 
         const canConvert = files.length > 0;
@@ -98,6 +100,30 @@ function App() {
 
         }, [error]);
 
+        const handleConversionProcess = async (e) => {
+                if(e.button !== 0) return;
+
+                try {
+                        const result = await convertToPNG(files[0], qualityValue);
+
+                        const url = URL.createObjectURL(result);
+
+                        setConvertedImage(url);
+
+                        console.log("Conversion successful: " + url);
+                } catch (error) {
+                        console.error("An error occurred: " + error);
+                        setError(error.message);
+                }
+        }
+
+        useEffect(() => {
+                return () => {
+                        if(convertedImage) 
+                                URL.revokeObjectURL(convertedImage);
+                }
+        }, [convertedImage]);
+
         return (
                 <Body>
                         <h1 className='text-left font-bold text-xl'>Convert PNG &rarr; JPG/JPEG</h1>
@@ -137,7 +163,7 @@ function App() {
                                 <span className='text-red-700 text-center mt-4 font-semibold'><p>{error}</p></span>
                         }
 
-                        <div className='my-6 max-h-72 overflow-auto'>
+                        <div className='my-6'>
                                 {files && 
                                         files.map((f, idx) => (
                                                 <File file={f} key={idx} name={f.name} lastModifiedDate={f.lastModifiedDate} size={f.size} deleteFile={deleteFileHandle}/>
@@ -166,7 +192,7 @@ function App() {
                                         <p className='font-semibold text-xl max-w-xl'>{`${Math.round(qualityValue*100)}%`}</p>
                                 </div>
 
-                                <button disabled={!canConvert} className='
+                                <button onClick={handleConversionProcess} disabled={!canConvert} className='
                                         w-full bg-neutral-500 
                                         hover:bg-neutral-600
                                         active:bg-neutral-700
@@ -175,6 +201,14 @@ function App() {
                                         disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-neutral-500
                                 '>Convert</button>
                         </div>
+
+                        { convertedImage &&
+                        <div className='
+                        
+                        '>
+                                <img src={convertedImage} alt="" />
+                        </div>
+                        }
 
                         <input multiple type="file" ref={fileInput} hidden onChange={handleFileInput} accept='.png'/>
                 </Body>
