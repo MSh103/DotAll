@@ -13,8 +13,7 @@ export default function Body({children})
                         <div className="
                                 w-[90%]
                                 h-fit
-                                bg-neutral-500
-                                text-neutral-100
+                                text-neutral-900
                                 px-4
                                 py-6
                                 rounded-lg
