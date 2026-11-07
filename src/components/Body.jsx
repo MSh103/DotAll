@@ -10,6 +10,7 @@ export default function Body({children})
                 ">
                         <div className="
                                 w-[90%]
+                                lg:w-[35%]
                                 h-fit
                                 mx-auto
                                 text-neutral-900

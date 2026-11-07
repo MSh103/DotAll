@@ -2,7 +2,11 @@ import {useEffect, useRef, useState} from 'react';
 
 import Body from './components/Body'
 import File from './components/File';
-import { convertToPNG } from './conversion/image';
+import ColorPicker from './components/ColorPicker';
+import { convertPNGToJPG } from './conversion/image';
+
+
+
 
 function App() {
 
@@ -10,6 +14,7 @@ function App() {
         const [isDragging, setIsDragging] = useState(false);
         const [error, setError] = useState(null);
         const [qualityValue, setQualityValue] = useState(0.9);
+        const [color, setColor] = useState("#FFFFFF");
         const [convertedImage, setConvertedImage] = useState(null);
         const fileInput = useRef(null);
 
@@ -104,7 +109,7 @@ function App() {
                 if(e.button !== 0) return;
 
                 try {
-                        const result = await convertToPNG(files[0], qualityValue);
+                        const result = await convertPNGToJPG(files[0], qualityValue, color);
 
                         const url = URL.createObjectURL(result);
 
@@ -172,35 +177,41 @@ function App() {
                         </div>
 
                         <div className='
-                                w-full
+                                w-full flex flex-col
                         '>
-                                <label htmlFor="quality" className='text-xl font-bold'>Quality:</label>
-                                <div className='flex space-x-4'>
-                                        <input 
-                                                type="range" 
-                                                name="quality" 
-                                                id="quality" 
-                                                className='
-                                                w-full h-2 rounded-full my-4 accent-indigo-700
-                                                '
-                                                min={0}
-                                                step={0.01}
-                                                max={1}
-                                                value={qualityValue}
-                                                onChange={(e) => setQualityValue(Number(e.target.value))}
-                                        />
-                                        <p className='font-semibold text-xl max-w-xl'>{`${Math.round(qualityValue*100)}%`}</p>
+                                <div className='w-full'>
+                                        <ColorPicker title="Background:" color={color} setColor={setColor}/>
                                 </div>
 
-                                <button onClick={handleConversionProcess} disabled={!canConvert} className='
-                                        w-full bg-neutral-500 
-                                        hover:bg-neutral-600
-                                        active:bg-neutral-700
-                                        text-neutral-100
-                                        p-2 rounded font-bold
-                                        disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-neutral-500
-                                '>Convert</button>
+                                <div className='w-full'>
+                                        <label htmlFor="quality" className='text-xl font-bold'>Quality:</label>
+                                        <div className='flex space-x-4'>
+                                                <input 
+                                                        type="range" 
+                                                        name="quality" 
+                                                        id="quality" 
+                                                        className='
+                                                        w-full h-2 rounded-full my-4 accent-indigo-700
+                                                        '
+                                                        min={0}
+                                                        step={0.01}
+                                                        max={1}
+                                                        value={qualityValue}
+                                                        onChange={(e) => setQualityValue(Number(e.target.value))}
+                                                />
+                                                <p className='font-semibold text-xl max-w-xl'>{`${Math.round(qualityValue*100)}%`}</p>
+                                        </div>
+                                </div>
+
                         </div>
+                        <button onClick={handleConversionProcess} disabled={!canConvert} className='
+                                w-full bg-neutral-500 
+                                hover:bg-neutral-600
+                                active:bg-neutral-700
+                                text-neutral-100
+                                p-2 rounded font-bold
+                                disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-neutral-500
+                        '>Convert</button>
 
                         { convertedImage &&
                         <div className='

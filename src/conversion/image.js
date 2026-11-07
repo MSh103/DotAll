@@ -1,6 +1,6 @@
 
 
-export async function convertToPNG(file, quality)
+export async function convertPNGToJPG(file, quality, bgColor="#FFFFFF")
 {
         const bitmap = await createImageBitmap(file);
 
@@ -11,7 +11,7 @@ export async function convertToPNG(file, quality)
 
         const ctx = canvas.getContext("2d");
 
-        ctx.fillStyle = "#FFF";
+        ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.drawImage(bitmap, 0, 0);
